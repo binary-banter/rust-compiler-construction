@@ -1,4 +1,4 @@
-use crate::passes::parse::types::{IntType, Type};
+use crate::passes::parse::types::Type;
 use crate::passes::parse::{Constrained, Expr, Lit, Meta, Param, Span, Spanned, TypeDef, Typed};
 use crate::passes::select::{Instr, InstrSelected, VarArg};
 use crate::passes::validate::error::TypeError;
@@ -9,7 +9,6 @@ use crate::passes::validate::{
 };
 use crate::utils::union_find::{UnionFind, UnionIndex};
 use crate::utils::unique_sym::UniqueSym;
-use crate::*;
 use functor_derive::Functor;
 use std::num::ParseIntError;
 

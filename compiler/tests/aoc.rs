@@ -39,9 +39,8 @@ fn aoc([program_path, output_path]: [&Path; 2]) {
 
     // Wait for output to be executable.
     let child = loop {
-        match create_child() {
-            Ok(child) => break child,
-            _ => {}
+        if let Ok(child) = create_child() {
+            break child;
         }
     };
 

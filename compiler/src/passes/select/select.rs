@@ -91,7 +91,7 @@ fn entry_block<'p>(
 
 /// Creates an exit block for the function.
 fn exit_block<'p>(
-    fun: &FunEliminated<'p>,
+    _fun: &FunEliminated<'p>,
     blocks: &mut HashMap<UniqueSym<'p>, Block<'p, VarArg<UniqueSym<'p>>>>,
 ) -> UniqueSym<'p> {
     let exit = gen_sym("exit");
@@ -166,10 +166,6 @@ fn select_assign<'p>(
     let dst = var!(dsts[0]);
     match expr.inner {
         ExprEliminated::Atom { atm, .. } => vec![mov!(select_atom(atm), dst)],
-        ExprEliminated::Atom {
-            atm: Atom::Var { sym },
-            ..
-        } => vec![mov!(var!(sym), dst)],
         ExprEliminated::BinaryOp {
             op,
             exprs: [a0, a1],

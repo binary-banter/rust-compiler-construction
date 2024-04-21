@@ -27,7 +27,7 @@ impl<'p> X86Patched<'p> {
                     for instr in &mut block.instrs {
                         match instr {
                             Instr::CallDirect { lbl, .. } | Instr::LoadLbl { lbl, .. } => {
-                                *lbl = entries[&lbl];
+                                *lbl = entries[lbl];
                             }
                             _ => {}
                         }
@@ -69,14 +69,6 @@ fn fix_stack_space(block: &mut Block<Arg>, stack_space: usize) {
             } => {
                 assert_eq!(*val, 0x1000);
                 *val = stack_space as i32;
-            }
-            InstrAssigned::Add {
-                src: Arg::Imm(_), ..
-            }
-            | InstrAssigned::Sub {
-                src: Arg::Imm(_), ..
-            } => {
-                todo!()
             }
             _ => {}
         }

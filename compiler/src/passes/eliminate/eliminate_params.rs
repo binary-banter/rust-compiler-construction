@@ -35,7 +35,7 @@ pub fn flatten_type<'p>(
         Type::Int { .. } | Type::Bool | Type::Unit | Type::Never | Type::Fn { .. } => {
             vec![(sym, typ.clone())]
         }
-        Type::Var { sym: def_sym } => match &defs[&def_sym] {
+        Type::Var { sym: def_sym } => match &defs[def_sym] {
             TypeDef::Struct { fields } => fields
                 .iter()
                 .flat_map(|(field_name, field_type)| {

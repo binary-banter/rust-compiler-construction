@@ -6,7 +6,6 @@ use crate::passes::validate::uniquify::{gen_spanned_sym, try_get};
 use crate::passes::validate::{uniquify, ExprUniquified, InstrUniquified};
 use crate::utils::push_map::PushMap;
 use crate::utils::unique_sym::UniqueSym;
-use crate::*;
 
 pub fn uniquify_expr<'p>(
     expr: Spanned<ExprParsed<'p>>,

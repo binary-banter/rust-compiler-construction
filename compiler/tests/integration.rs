@@ -32,9 +32,8 @@ fn integration([test]: [&str; 1]) {
 
     // Wait for output to be executable.
     let mut child = loop {
-        match create_child() {
-            Ok(child) => break child,
-            _ => {}
+        if let Ok(child) = create_child() {
+            break child;
         }
     };
 
