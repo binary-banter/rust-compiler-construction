@@ -106,35 +106,32 @@ pub fn encode_binary_instr(op_info: BinaryOpInfo, src: &Arg, dst: &Arg) -> Vec<u
             v
         }
         (Arg::Imm(imm), Arg::Reg(dst)) => {
-                let (d, ddd) = encode_reg(dst);
+            let (d, ddd) = encode_reg(dst);
 
-                let mut v = vec![
-                    0b0100_1000 | d,
-                    op_info.i_rm,
-                    0b11_000_000 | op_info.pad << 3 | ddd,
-                ];
-                v.extend(imm.to_le_bytes());
-                v
-
-        },
+            let mut v = vec![
+                0b0100_1000 | d,
+                op_info.i_rm,
+                0b11_000_000 | op_info.pad << 3 | ddd,
+            ];
+            v.extend(imm.to_le_bytes());
+            v
+        }
         (Arg::Imm(imm), Arg::Deref { reg: dst, off }) => {
+            let (d, ddd) = encode_reg(dst);
+            let off = *off as i32;
 
-                let (d, ddd) = encode_reg(dst);
-                let off = *off as i32;
-
-                let mut v = vec![
-                    0b0100_1000 | d,
-                    op_info.i_rm,
-                    0b10_000_000 | op_info.pad << 3 | ddd,
-                ];
-                if matches!(dst, Reg::RSP | Reg::R12) {
-                    v.push(0x24);
-                }
-                v.extend(off.to_le_bytes());
-                v.extend(imm.to_le_bytes());
-                v
-
-        },
+            let mut v = vec![
+                0b0100_1000 | d,
+                op_info.i_rm,
+                0b10_000_000 | op_info.pad << 3 | ddd,
+            ];
+            if matches!(dst, Reg::RSP | Reg::R12) {
+                v.push(0x24);
+            }
+            v.extend(off.to_le_bytes());
+            v.extend(imm.to_le_bytes());
+            v
+        }
         (Arg::Deref { .. }, Arg::Deref { .. }) => {
             unreachable!("Found binary instruction with 2 derefs.");
         }

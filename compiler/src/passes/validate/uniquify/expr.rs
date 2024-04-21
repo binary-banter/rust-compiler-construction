@@ -124,84 +124,56 @@ fn uniquify_instr<'p>(
         InstrParsed::Add { src, dst } => InstrUniquified::Add {
             src: map(src)?,
             dst: map(dst)?,
-            
         },
         InstrParsed::Sub { src, dst } => InstrUniquified::Sub {
             src: map(src)?,
             dst: map(dst)?,
-            
         },
         InstrParsed::Div { divisor } => InstrUniquified::Div {
             divisor: map(divisor)?,
-            
         },
         InstrParsed::IDiv { divisor } => InstrUniquified::IDiv {
             divisor: map(divisor)?,
-            
         },
-        InstrParsed::Mul { src } => InstrUniquified::Mul {
-            src: map(src)?,
-            
-        },
-        InstrParsed::IMul { src } => InstrUniquified::IMul {
-            src: map(src)?,
-            
-        },
-        InstrParsed::Neg { dst } => InstrUniquified::Neg {
-            dst: map(dst)?,
-            
-        },
+        InstrParsed::Mul { src } => InstrUniquified::Mul { src: map(src)? },
+        InstrParsed::IMul { src } => InstrUniquified::IMul { src: map(src)? },
+        InstrParsed::Neg { dst } => InstrUniquified::Neg { dst: map(dst)? },
         InstrParsed::Mov { src, dst } => InstrUniquified::Mov {
             src: map(src)?,
             dst: map(dst)?,
-            
         },
         InstrParsed::MovSX { src, dst } => InstrUniquified::MovSX {
             src: map(src)?,
             dst: map(dst)?,
-            
         },
-        InstrParsed::Push { src } => InstrUniquified::Push {
-            src: map(src)?,
-            
-        },
-        InstrParsed::Pop { dst } => InstrUniquified::Pop {
-            dst: map(dst)?,
-            
-        },
+        InstrParsed::Push { src } => InstrUniquified::Push { src: map(src)? },
+        InstrParsed::Pop { dst } => InstrUniquified::Pop { dst: map(dst)? },
 
         InstrParsed::Syscall { arity } => InstrUniquified::Syscall { arity },
         InstrParsed::Cmp { src, dst } => InstrUniquified::Cmp {
             src: map(src)?,
             dst: map(dst)?,
-            
         },
         InstrParsed::And { src, dst } => InstrUniquified::And {
             src: map(src)?,
             dst: map(dst)?,
-            
         },
         InstrParsed::Or { src, dst } => InstrUniquified::Or {
             src: map(src)?,
             dst: map(dst)?,
-            
         },
         InstrParsed::Xor { src, dst } => InstrUniquified::Xor {
             src: map(src)?,
             dst: map(dst)?,
-            
         },
-        InstrParsed::Not { dst } => InstrUniquified::Not {
-            dst: map(dst)?,
-            
-        },
+        InstrParsed::Not { dst } => InstrUniquified::Not { dst: map(dst)? },
         InstrParsed::Setcc { .. }
         | InstrParsed::Ret { .. }
         | InstrParsed::Jmp { .. }
         | InstrParsed::Jcc { .. }
         | InstrParsed::LoadLbl { .. }
         | InstrParsed::CallDirect { .. }
-        | InstrParsed::CallIndirect {.. } => unreachable!(),
+        | InstrParsed::CallIndirect { .. } => unreachable!(),
     };
 
     Ok(instr)

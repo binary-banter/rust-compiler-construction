@@ -4,8 +4,8 @@ use crate::passes::select::{Instr, InstrSelected, VarArg};
 use crate::passes::validate::error::TypeError;
 use crate::passes::validate::partial_type::PartialType;
 use crate::passes::validate::{
-    DefConstrained, DefValidated, ExprConstrained, ExprValidated, InstrUniquified,
-    PrgConstrained, PrgValidated,
+    DefConstrained, DefValidated, ExprConstrained, ExprValidated, InstrUniquified, PrgConstrained,
+    PrgValidated,
 };
 use crate::utils::union_find::{UnionFind, UnionIndex};
 use crate::utils::unique_sym::UniqueSym;
@@ -168,11 +168,9 @@ fn resolve_expr<'p>(
                 Lit::Int(val) => match &typ {
                     Some(typ) => {
                         let int = match typ {
-                            Type::Int(_int) => resolve_int_lit(
-                                val,
-                                expr.meta.span,
-                                i64::from_str_radix,
-                            )?,
+                            Type::Int(_int) => {
+                                resolve_int_lit(val, expr.meta.span, i64::from_str_radix)?
+                            }
                             //     match int {
                             //     IntType::I8 => todo!(),
                             //     IntType::U8 => Int::U8({
@@ -326,71 +324,44 @@ pub fn resolve_instr<'p>(
         InstrUniquified::Sub { src, dst } => InstrSelected::Sub {
             src: map(src),
             dst: map(dst),
-            
         },
         InstrUniquified::Div { divisor } => InstrSelected::Div {
             divisor: map(divisor),
-            
         },
         InstrUniquified::IDiv { divisor } => InstrSelected::IDiv {
             divisor: map(divisor),
-            
         },
-        InstrUniquified::Mul { src } => InstrSelected::Mul {
-            src: map(src),
-            
-        },
-        InstrUniquified::IMul { src } => InstrSelected::IMul {
-            src: map(src),
-            
-        },
-        InstrUniquified::Neg { dst } => InstrSelected::Neg {
-            dst: map(dst),
-            
-        },
+        InstrUniquified::Mul { src } => InstrSelected::Mul { src: map(src) },
+        InstrUniquified::IMul { src } => InstrSelected::IMul { src: map(src) },
+        InstrUniquified::Neg { dst } => InstrSelected::Neg { dst: map(dst) },
         InstrUniquified::Mov { src, dst } => InstrSelected::Mov {
             src: map(src),
             dst: map(dst),
-            
         },
         InstrUniquified::MovSX { src, dst } => InstrSelected::MovSX {
             src: map(src),
             dst: map(dst),
-            
         },
-        InstrUniquified::Push { src } => InstrSelected::Push {
-            src: map(src),
-            
-        },
-        InstrUniquified::Pop { dst } => InstrSelected::Pop {
-            dst: map(dst),
-            
-        },
+        InstrUniquified::Push { src } => InstrSelected::Push { src: map(src) },
+        InstrUniquified::Pop { dst } => InstrSelected::Pop { dst: map(dst) },
         InstrUniquified::Syscall { arity } => InstrSelected::Syscall { arity },
         InstrUniquified::Cmp { src, dst } => InstrSelected::Cmp {
             src: map(src),
             dst: map(dst),
-            
         },
         InstrUniquified::And { src, dst } => InstrSelected::And {
             src: map(src),
             dst: map(dst),
-            
         },
         InstrUniquified::Or { src, dst } => InstrSelected::Or {
             src: map(src),
             dst: map(dst),
-            
         },
         InstrUniquified::Xor { src, dst } => InstrSelected::Xor {
             src: map(src),
             dst: map(dst),
-            
         },
-        InstrUniquified::Not { dst } => InstrSelected::Not {
-            dst: map(dst),
-            
-        },
+        InstrUniquified::Not { dst } => InstrSelected::Not { dst: map(dst) },
         InstrUniquified::Setcc { .. }
         | InstrUniquified::Ret { .. }
         | InstrUniquified::Jmp { .. }

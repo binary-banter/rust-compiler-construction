@@ -11,7 +11,6 @@ macro_rules! add {
         $crate::passes::select::Instr::Add {
             src: $src,
             dst: $dst,
-            
         }
     };
 }
@@ -22,7 +21,6 @@ macro_rules! sub {
         $crate::passes::select::Instr::Sub {
             src: $src,
             dst: $dst,
-            
         }
     };
 }
@@ -30,50 +28,35 @@ macro_rules! sub {
 #[macro_export]
 macro_rules! div {
     ($divisor:expr) => {
-        $crate::passes::select::Instr::Div {
-            divisor: $divisor,
-            
-        }
+        $crate::passes::select::Instr::Div { divisor: $divisor }
     };
 }
 
 #[macro_export]
 macro_rules! idiv {
     ($divisor:expr) => {
-        $crate::passes::select::Instr::IDiv {
-            divisor: $divisor,
-            
-        }
+        $crate::passes::select::Instr::IDiv { divisor: $divisor }
     };
 }
 
 #[macro_export]
 macro_rules! mul {
     ($src:expr) => {
-        $crate::passes::select::Instr::Mul {
-            src: $src,
-            
-        }
+        $crate::passes::select::Instr::Mul { src: $src }
     };
 }
 
 #[macro_export]
 macro_rules! imul {
     ($src:expr) => {
-        $crate::passes::select::Instr::IMul {
-            src: $src,
-            
-        }
+        $crate::passes::select::Instr::IMul { src: $src }
     };
 }
 
 #[macro_export]
 macro_rules! neg {
     ($dst:expr) => {
-        $crate::passes::select::Instr::Neg {
-            dst: $dst,
-            
-        }
+        $crate::passes::select::Instr::Neg { dst: $dst }
     };
 }
 
@@ -83,7 +66,6 @@ macro_rules! mov {
         $crate::passes::select::Instr::Mov {
             src: $src,
             dst: $dst,
-            
         }
     };
 }
@@ -94,7 +76,6 @@ macro_rules! movsx {
         $crate::passes::select::Instr::MovSX {
             src: $src,
             dst: $dst,
-            
         }
     };
 }
@@ -102,20 +83,14 @@ macro_rules! movsx {
 #[macro_export]
 macro_rules! push {
     ($src:expr) => {
-        $crate::passes::select::Instr::Push {
-            src: $src,
-            
-        }
+        $crate::passes::select::Instr::Push { src: $src }
     };
 }
 
 #[macro_export]
 macro_rules! pop {
     ($dst:expr) => {
-        $crate::passes::select::Instr::Pop {
-            dst: $dst,
-            
-        }
+        $crate::passes::select::Instr::Pop { dst: $dst }
     };
 }
 
@@ -139,7 +114,6 @@ macro_rules! cmp {
         $crate::passes::select::Instr::Cmp {
             src: $src,
             dst: $dst,
-            
         }
     };
 }
@@ -167,7 +141,6 @@ macro_rules! and {
         $crate::passes::select::Instr::And {
             src: $src,
             dst: $dst,
-            
         }
     };
 }
@@ -178,7 +151,6 @@ macro_rules! or {
         $crate::passes::select::Instr::Or {
             src: $src,
             dst: $dst,
-            
         }
     };
 }
@@ -189,7 +161,6 @@ macro_rules! xor {
         $crate::passes::select::Instr::Xor {
             src: $src,
             dst: $dst,
-            
         }
     };
 }
@@ -197,10 +168,7 @@ macro_rules! xor {
 #[macro_export]
 macro_rules! not {
     ($dst:expr) => {
-        $crate::passes::select::Instr::Not {
-            dst: $dst,
-            
-        }
+        $crate::passes::select::Instr::Not { dst: $dst }
     };
 }
 

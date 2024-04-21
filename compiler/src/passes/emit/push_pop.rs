@@ -1,7 +1,6 @@
 use crate::passes::assign::Arg;
 use crate::passes::emit;
 
-
 pub struct PushPopInfo {
     pub op_reg: u8,
     pub op_deref: u8,
@@ -29,7 +28,7 @@ pub fn encode_push_pop(op_info: PushPopInfo, reg: &Arg) -> Vec<u8> {
             let mut v = vec![op_info.op_imm];
             v.extend(val.to_le_bytes());
             v
-        },
+        }
         Arg::Reg(reg) => {
             let (r, rrr) = emit::encode_reg(reg);
             if r == 0 {

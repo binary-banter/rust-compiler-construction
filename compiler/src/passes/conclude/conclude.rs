@@ -6,7 +6,6 @@ use crate::utils::unique_sym::gen_sym;
 use crate::*;
 use std::collections::HashMap;
 
-
 impl<'p> X86Patched<'p> {
     #[must_use]
     pub fn conclude(self) -> X86Concluded<'p> {
@@ -63,12 +62,10 @@ fn fix_stack_space(block: &mut Block<Arg>, stack_space: usize) {
     for instr in &mut block.instrs {
         match instr {
             InstrAssigned::Add {
-                src: Arg::Imm(val),
-                ..
+                src: Arg::Imm(val), ..
             }
             | InstrAssigned::Sub {
-                src: Arg::Imm(val),
-                ..
+                src: Arg::Imm(val), ..
             } => {
                 assert_eq!(*val, 0x1000);
                 *val = stack_space as i32;
