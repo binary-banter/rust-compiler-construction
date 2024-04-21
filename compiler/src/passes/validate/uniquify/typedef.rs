@@ -18,7 +18,12 @@ pub fn uniquify_typedef<'p>(
                 .map(|(sym, typ)| Ok((sym, uniquify_type(typ, scope)?)))
                 .collect::<Result<_, _>>()?,
         },
-        TypeDef::Enum { .. } => todo!(),
+        TypeDef::Enum { variants } => TypeDef::Enum {
+            variants: variants
+                .into_iter()
+                .map(|(sym, typ)| Ok((sym, uniquify_type(typ, scope)?)))
+                .collect::<Result<_, _>>()?,
+        },
     };
 
     Ok(Def::TypeDef {

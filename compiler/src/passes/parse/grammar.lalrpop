@@ -2,9 +2,6 @@ use crate::passes::parse::{
     BinaryOp, DefParsed, ExprParsed, InstrParsed, Lit, Meta, Param, PrgParsed, Spanned, Type, TypeDef, UnaryOp, types::IntType,
 };
 use crate::passes::select::{VarArg, Reg};
-use functor_derive::Functor;
-
-use crate::passes::select::Size;
 
 grammar;
 

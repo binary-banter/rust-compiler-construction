@@ -5,28 +5,28 @@ edition = "2021"
 authors = ["joooooooonaaaaa", "juuuuuuuuuuuuuuuuuuliaaaaaaaaaa"]
 
 [dependencies]
-thiserror = "1.0.50"
-bitflags = "2.4.1"
+thiserror = "1.0.59"
+bitflags = "2.5.0"
 petgraph = "0.6.4"
-itertools = "0.12.0"
-serde = { version = "1.0.192", features = ["derive"] }
-clap = { version = "4.4.7", features = ["derive"] }
-miette = { version = "5.10.0", features = ["fancy"] }
-zerocopy = { version = "0.7.25", features = ["derive"] }
-lalrpop-util = { version = "0.20.0", features = ["lexer", "unicode"] }
+itertools = "0.12.1"
+serde = { version = "1.0.198", features = ["derive"] }
+clap = { version = "4.5.4", features = ["derive"] }
+miette = { version = "7.2.0", features = ["fancy"] }
+zerocopy = { version = "0.7.32", features = ["derive"] }
+lalrpop-util = { version = "0.20.2", features = ["lexer", "unicode"] }
 derive_more = "0.99.17"
-functor_derive = "0.2.3"
+functor_derive = "0.4.3"
 indenter = "0.3.3"
-once_cell = "1.18.0"
+once_cell = "1.19.0"
 binary-heap-plus = "0.5.0"
 
 [build-dependencies]
-lalrpop = "0.20.0"
+lalrpop = "0.20.2"
 
 [dev-dependencies]
 test_each_file = "0.3.2"
-tempfile = "3.8.1"
-enum-display = "0.1.3"
+tempfile = "3.10.1"
+enum-display = "0.1.4"
 derive-name = "1.1.0"
 
 [features]

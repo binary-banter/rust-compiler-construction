@@ -75,6 +75,7 @@ cargo run -- input.sp -o output
 * [x] Add read and write functionality to the bencher to update locally.
 * [x] Lots, and lots, of refactoring!
 * [x] Write test input in comments.
+* [ ] Use arenas for improved performance TM
 
 # Upcoming Language Features
 

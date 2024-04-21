@@ -247,9 +247,10 @@ pub type SwitchArm<IdentVars, IdentFields, Lit, M> = (
     Box<Meta<M, Expr<IdentVars, IdentFields, Lit, M>>>,
 );
 
-#[derive(Clone, Display, Debug)]
+#[derive(Clone, Display, Debug, Functor)]
 #[display(bound = "B: Display")]
 #[display(fmt = "{inner}")]
+#[functor(B)]
 pub struct Meta<M, B> {
     pub meta: M,
     pub inner: B,
@@ -258,17 +259,6 @@ pub struct Meta<M, B> {
 pub type Spanned<T> = Meta<Span, T>;
 pub type Constrained<T> = Meta<MetaConstrained, T>;
 pub type Typed<'p, T> = Meta<Type<UniqueSym<'p>>, T>;
-
-impl<M, B> Functor<B> for Meta<M, B> {
-    type Target<T> = Meta<M, T>;
-
-    fn fmap<B2>(self, f: impl Fn(B) -> B2) -> Self::Target<B2> {
-        Meta {
-            meta: self.meta,
-            inner: f(self.inner),
-        }
-    }
-}
 
 pub type Span = (usize, usize);
 

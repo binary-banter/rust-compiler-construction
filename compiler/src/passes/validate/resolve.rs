@@ -62,7 +62,10 @@ fn resolve_typedef<'p>(
             fields: fields
                 .fmap(|(field_sym, field_typ)| (field_sym.inner, resolve_type(field_typ))),
         },
-        TypeDef::Enum { .. } => todo!(),
+        TypeDef::Enum { variants } => TypeDef::Enum {
+            variants: variants
+                .fmap(|(variant_sym, variant_typ)| (variant_sym.inner, resolve_type(variant_typ))),
+        },
     }
 }
 
