@@ -295,7 +295,11 @@ fn resolve_expr<'p>(
             strct: Box::new(resolve_expr(*strct, uf)?),
             field: field.inner,
         },
-        Expr::Variant { .. } => todo!(),
+        Expr::Variant { enum_sym, variant_sym, bdy } => Expr::Variant {
+            enum_sym: enum_sym.inner,
+            variant_sym: variant_sym.inner,
+            bdy: Box::new(resolve_expr(*bdy, uf)?),
+        },
         Expr::Switch { .. } => todo!(),
         ExprConstrained::Asm { instrs } => ExprValidated::Asm {
             instrs: instrs.into_iter().map(resolve_instr).collect(),

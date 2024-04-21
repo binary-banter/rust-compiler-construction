@@ -17,6 +17,7 @@ use crate::passes::validate::constrain::seq::constrain_seq;
 use crate::passes::validate::constrain::unary_op::constrain_unary_op;
 use crate::passes::validate::constrain::uncover_globals::Env;
 use crate::passes::validate::constrain::var::constrain_var;
+use crate::passes::validate::constrain::variant;
 use crate::passes::validate::error::TypeError;
 use crate::passes::validate::{ExprConstrained, ExprUniquified};
 
@@ -52,7 +53,11 @@ pub fn constrain_expr<'p>(
         Expr::Struct { sym, fields } => constrain_struct(env, span, sym, fields),
         Expr::AccessField { strct, field } => constrain_access_field(env, span, *strct, field),
         Expr::Asm { instrs } => constrain_asm(env, span, instrs),
-        Expr::Variant { .. } => todo!(),
+        Expr::Variant {
+            enum_sym,
+            variant_sym,
+            bdy,
+        } => variant::constraint_variant(env, span, enum_sym, variant_sym, *bdy),
         Expr::Switch { .. } => todo!(),
     }
 }

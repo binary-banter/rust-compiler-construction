@@ -3,7 +3,7 @@ use crate::passes::select::VarArg;
 use crate::passes::validate::error::TypeError;
 use crate::passes::validate::uniquify::r#type::uniquify_type;
 use crate::passes::validate::uniquify::{gen_spanned_sym, try_get};
-use crate::passes::validate::{uniquify, ExprUniquified, InstrUniquified};
+use crate::passes::validate::{ExprUniquified, InstrUniquified};
 use crate::utils::push_map::PushMap;
 use crate::utils::unique_sym::UniqueSym;
 
@@ -34,14 +34,14 @@ pub fn uniquify_expr<'p>(
             }
         }
         Expr::Var { sym } => Expr::Var {
-            sym: uniquify::try_get(sym, scope)?,
+            sym: try_get(sym, scope)?,
         },
         Expr::Assign { sym, bnd } => Expr::Assign {
-            sym: uniquify::try_get(sym, scope)?,
+            sym: try_get(sym, scope)?,
             bnd: Box::new(uniquify_expr(*bnd, scope)?),
         },
         Expr::Struct { sym, fields } => Expr::Struct {
-            sym: uniquify::try_get(sym, scope)?,
+            sym: try_get(sym, scope)?,
             fields: fields
                 .into_iter()
                 .map(|(sym, expr)| uniquify_expr(expr, scope).map(|expr| (sym, expr)))
@@ -90,7 +90,15 @@ pub fn uniquify_expr<'p>(
             strct: Box::new(uniquify_expr(*strct, scope)?),
             field,
         },
-        Expr::Variant { .. } => todo!(),
+        Expr::Variant {
+            enum_sym,
+            variant_sym,
+            bdy,
+        } => Expr::Variant {
+            enum_sym: try_get(enum_sym, scope)?,
+            variant_sym,
+            bdy: Box::new(uniquify_expr(*bdy, scope)?),
+        },
         Expr::Switch { .. } => todo!(),
         ExprParsed::Asm { instrs } => ExprUniquified::Asm {
             instrs: instrs

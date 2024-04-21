@@ -53,10 +53,21 @@ pub enum TypeError {
         #[label = "This should be a struct."]
         span: (usize, usize),
     },
+    #[error("Tried to use variable as type.'")]
+    SymbolShouldBeEnum {
+        #[label = "This should be an enum."]
+        span: (usize, usize),
+    },
     #[error("Unknown struct field.")]
     UnknownStructField {
         sym: String,
         #[label = "The field `{sym}` is not present in the struct definition."]
+        span: (usize, usize),
+    },
+    #[error("Unknown enum variant.")]
+    UnknownEnumVariant {
+        sym: String,
+        #[label = "The variant `{sym}` is not present in the enum definition."]
         span: (usize, usize),
     },
     #[error("Missing struct field.")]
@@ -170,6 +181,16 @@ pub enum TypeError {
         got: String,
 
         #[label = "Expected struct field to have type: `{expect}`"]
+        span_expected: (usize, usize),
+        #[label = "But got this type: `{got}`"]
+        span_got: (usize, usize),
+    },
+    #[error("Types did not match.")]
+    MismatchedEnumVariant {
+        expect: String,
+        got: String,
+
+        #[label = "Expected enum variant to have type: `{expect}`"]
         span_expected: (usize, usize),
         #[label = "But got this type: `{got}`"]
         span_got: (usize, usize),

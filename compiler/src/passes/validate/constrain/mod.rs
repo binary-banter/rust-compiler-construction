@@ -28,6 +28,7 @@ mod r#struct;
 mod unary_op;
 mod uncover_globals;
 mod var;
+mod variant;
 
 impl<'p> PrgUniquified<'p> {
     pub fn constrain(self) -> Result<PrgConstrained<'p>, TypeError> {
