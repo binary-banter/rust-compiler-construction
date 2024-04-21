@@ -2,7 +2,7 @@ mod display;
 pub mod macros;
 pub mod select;
 
-use crate::passes::validate::Int;
+
 use crate::utils::unique_sym::UniqueSym;
 use derive_more::Display;
 use functor_derive::Functor;
@@ -56,46 +56,46 @@ pub enum Cnd {
 pub enum Instr<Arg: Display, IdentVars: Display> {
     /// Add. https://www.felixcloutier.com/x86/add.
     #[display(fmt = "add\t{src} {dst}")]
-    Add { src: Arg, dst: Arg, size: Size },
+    Add { src: Arg, dst: Arg },
     /// Subtract. https://www.felixcloutier.com/x86/sub.
     #[display(fmt = "sub\t{src} {dst}")]
-    Sub { src: Arg, dst: Arg, size: Size },
+    Sub { src: Arg, dst: Arg },
     /// Unsigned Divide. https://www.felixcloutier.com/x86/div.
     #[display(fmt = "div\t{divisor}")]
-    Div { divisor: Arg, size: Size },
+    Div { divisor: Arg },
     /// Signed Divide. https://www.felixcloutier.com/x86/idiv.
     #[display(fmt = "div\t{divisor}")]
-    IDiv { divisor: Arg, size: Size },
+    IDiv { divisor: Arg },
     /// Unsigned Multiply. https://www.felixcloutier.com/x86/mul.
     #[display(fmt = "mul\t{src}")]
-    Mul { src: Arg, size: Size },
+    Mul { src: Arg },
     /// Signed Multiply. https://www.felixcloutier.com/x86/imul.
     #[display(fmt = "mul\t{src}")]
-    IMul { src: Arg, size: Size },
+    IMul { src: Arg },
     /// Two's Complement Negation. https://www.felixcloutier.com/x86/neg.
     #[display(fmt = "neg\t{dst}")]
-    Neg { dst: Arg, size: Size },
+    Neg { dst: Arg },
     /// Move. https://www.felixcloutier.com/x86/mov.
     #[display(fmt = "mov\t{src} {dst}")]
-    Mov { src: Arg, dst: Arg, size: Size },
+    Mov { src: Arg, dst: Arg },
     /// Move with sign extension. https://www.felixcloutier.com/x86/movsx:movsxd.
     #[display(fmt = "mov\t{src} {dst}")]
-    MovSX { src: Arg, dst: Arg, size: Size },
+    MovSX { src: Arg, dst: Arg },
     #[display(fmt = "push\t{src}")]
     /// Push Word, Doubleword, or Quadword Onto the Stack. https://www.felixcloutier.com/x86/push.
-    Push { src: Arg, size: Size },
+    Push { src: Arg },
     /// Pop a Value From the Stack. https://www.felixcloutier.com/x86/pop.
     #[display(fmt = "pop\t{dst}")]
-    Pop { dst: Arg, size: Size },
+    Pop { dst: Arg },
     /// Return From Procedure. https://www.felixcloutier.com/x86/ret.
-    #[display(fmt = "ret\t{arity}")]
-    Ret { arity: usize },
+    #[display(fmt = "ret")]
+    Ret,
     /// Fast System Call. https://www.felixcloutier.com/x86/syscall.
     #[display(fmt = "syscall\t{arity}")]
     Syscall { arity: usize },
     /// Compare Two Operands. https://www.felixcloutier.com/x86/cmp.
     #[display(fmt = "cmp\t{src} {dst}")]
-    Cmp { src: Arg, dst: Arg, size: Size },
+    Cmp { src: Arg, dst: Arg },
     /// Jump. https://www.felixcloutier.com/x86/jmp.
     #[display(fmt = "jmp\t{lbl}")]
     Jmp { lbl: IdentVars },
@@ -104,16 +104,16 @@ pub enum Instr<Arg: Display, IdentVars: Display> {
     Jcc { lbl: IdentVars, cnd: Cnd },
     /// Logical AND. https://www.felixcloutier.com/x86/and.
     #[display(fmt = "and {src} {dst}")]
-    And { src: Arg, dst: Arg, size: Size },
+    And { src: Arg, dst: Arg },
     /// Logical Inclusive OR. https://www.felixcloutier.com/x86/or.
     #[display(fmt = "orq {src} {dst}")]
-    Or { src: Arg, dst: Arg, size: Size },
+    Or { src: Arg, dst: Arg },
     /// Logical Exclusive OR. https://www.felixcloutier.com/x86/xor.
     #[display(fmt = "xor\t{src} {dst}")]
-    Xor { src: Arg, dst: Arg, size: Size },
+    Xor { src: Arg, dst: Arg },
     #[display(fmt = "not\t{dst}")]
     /// One's Complement Negation. https://www.felixcloutier.com/x86/not.
-    Not { dst: Arg, size: Size },
+    Not { dst: Arg },
     /// Set Byte On Condition. https://www.felixcloutier.com/x86/setcc
     #[display(fmt = "setcc\t{cnd}")]
     Setcc { cnd: Cnd },
@@ -131,7 +131,7 @@ pub enum Instr<Arg: Display, IdentVars: Display> {
 #[derive(Debug, PartialEq, Clone, Display, Functor)]
 pub enum VarArg<IdentVars: Display> {
     #[display(fmt = "${_0}")]
-    Imm(Int),
+    Imm(i32),
     #[display(fmt = "%{_0}")]
     Reg(Reg),
     #[display(fmt = "[%{reg} + ${off}]")]

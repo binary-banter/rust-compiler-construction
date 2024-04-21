@@ -5,7 +5,6 @@ mod display;
 mod include_liveness;
 
 use crate::passes::select::{Block, FunSelected, Instr, InstrSelected, Reg, VarArg, X86Selected};
-use crate::passes::validate::Int;
 use crate::utils::unique_sym::UniqueSym;
 use derive_more::Display;
 use functor_derive::Functor;
@@ -30,7 +29,7 @@ pub type InstrAssigned<'p> = Instr<Arg, UniqueSym<'p>>;
 #[derive(Clone, Display)]
 pub enum Arg {
     #[display(fmt = "${_0}")]
-    Imm(Int),
+    Imm(i32),
     #[display(fmt = "%{_0}")]
     Reg(Reg),
     #[display(fmt = "[%{reg} + ${off}]")]

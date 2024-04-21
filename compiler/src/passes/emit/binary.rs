@@ -63,93 +63,85 @@ pub const MOVQ_INFO: BinaryOpInfo = BinaryOpInfo {
 };
 
 pub fn encode_binary_instr(op_info: BinaryOpInfo, src: &Arg, dst: &Arg) -> Vec<u8> {
-    todo!()
-    // match (src, dst) {
-    //     (Arg::Reg(src), Arg::Reg(dst)) => {
-    //         let (s, sss) = encode_reg(src);
-    //         let (d, ddd) = encode_reg(dst);
-    //         vec![
-    //             0b0100_1000 | (s << 2) | d,
-    //             op_info.r_rm,
-    //             0b11_000_000 | sss << 3 | ddd,
-    //         ]
-    //     }
-    //     (Arg::Deref { reg: src, off }, Arg::Reg(dst)) => {
-    //         let (s, sss) = encode_reg(src);
-    //         let (d, ddd) = encode_reg(dst);
-    //         let off = *off as i32;
-    //
-    //         let mut v = vec![
-    //             0b0100_1000 | (d << 2) | s,
-    //             op_info.rm_r,
-    //             0b10_000_000 | ddd << 3 | sss,
-    //         ];
-    //         if matches!(src, Reg::RSP | Reg::R12) {
-    //             v.push(0x24);
-    //         }
-    //         v.extend(off.to_le_bytes());
-    //         v
-    //     }
-    //     (Arg::Reg(src), Arg::Deref { reg: dst, off }) => {
-    //         let (s, sss) = encode_reg(src);
-    //         let (d, ddd) = encode_reg(dst);
-    //         let off = *off as i32;
-    //
-    //         let mut v = vec![
-    //             0b0100_1000 | (s << 2) | d,
-    //             op_info.r_rm,
-    //             0b10_000_000 | sss << 3 | ddd,
-    //         ];
-    //         if matches!(dst, Reg::RSP | Reg::R12) {
-    //             v.push(0x24);
-    //         }
-    //         v.extend(off.to_le_bytes());
-    //         v
-    //     }
-    //     (Arg::Imm(imm), Arg::Reg(dst)) => match imm {
-    //         Imm::Imm8(_) => todo!(),
-    //         Imm::Imm16(_) => todo!(),
-    //         Imm::Imm32(imm) => {
-    //             let (d, ddd) = encode_reg(dst);
-    //
-    //             let mut v = vec![
-    //                 0b0100_1000 | d,
-    //                 op_info.i_rm,
-    //                 0b11_000_000 | op_info.pad << 3 | ddd,
-    //             ];
-    //             v.extend(imm.to_le_bytes());
-    //             v
-    //         }
-    //         Imm::Imm64(_) => todo!(),
-    //     },
-    //     (Arg::Imm(imm), Arg::Deref { reg: dst, off }) => match imm {
-    //         Imm::Imm8(_) => todo!(),
-    //         Imm::Imm16(_) => todo!(),
-    //         Imm::Imm32(imm) => {
-    //             let (d, ddd) = encode_reg(dst);
-    //             let off = *off as i32;
-    //
-    //             let mut v = vec![
-    //                 0b0100_1000 | d,
-    //                 op_info.i_rm,
-    //                 0b10_000_000 | op_info.pad << 3 | ddd,
-    //             ];
-    //             if matches!(dst, Reg::RSP | Reg::R12) {
-    //                 v.push(0x24);
-    //             }
-    //             v.extend(off.to_le_bytes());
-    //             v.extend(imm.to_le_bytes());
-    //             v
-    //         }
-    //         Imm::Imm64(_) => todo!(),
-    //     },
-    //     (Arg::Deref { .. }, Arg::Deref { .. }) => {
-    //         unreachable!("Found binary instruction with 2 derefs.");
-    //     }
-    //     (_, Arg::Imm { .. }) => {
-    //         unreachable!("Found immediate in destination position.");
-    //     }
-    // }
+    match (src, dst) {
+        (Arg::Reg(src), Arg::Reg(dst)) => {
+            let (s, sss) = encode_reg(src);
+            let (d, ddd) = encode_reg(dst);
+            vec![
+                0b0100_1000 | (s << 2) | d,
+                op_info.r_rm,
+                0b11_000_000 | sss << 3 | ddd,
+            ]
+        }
+        (Arg::Deref { reg: src, off }, Arg::Reg(dst)) => {
+            let (s, sss) = encode_reg(src);
+            let (d, ddd) = encode_reg(dst);
+            let off = *off as i32;
+
+            let mut v = vec![
+                0b0100_1000 | (d << 2) | s,
+                op_info.rm_r,
+                0b10_000_000 | ddd << 3 | sss,
+            ];
+            if matches!(src, Reg::RSP | Reg::R12) {
+                v.push(0x24);
+            }
+            v.extend(off.to_le_bytes());
+            v
+        }
+        (Arg::Reg(src), Arg::Deref { reg: dst, off }) => {
+            let (s, sss) = encode_reg(src);
+            let (d, ddd) = encode_reg(dst);
+            let off = *off as i32;
+
+            let mut v = vec![
+                0b0100_1000 | (s << 2) | d,
+                op_info.r_rm,
+                0b10_000_000 | sss << 3 | ddd,
+            ];
+            if matches!(dst, Reg::RSP | Reg::R12) {
+                v.push(0x24);
+            }
+            v.extend(off.to_le_bytes());
+            v
+        }
+        (Arg::Imm(imm), Arg::Reg(dst)) => {
+                let (d, ddd) = encode_reg(dst);
+
+                let mut v = vec![
+                    0b0100_1000 | d,
+                    op_info.i_rm,
+                    0b11_000_000 | op_info.pad << 3 | ddd,
+                ];
+                v.extend(imm.to_le_bytes());
+                v
+
+        },
+        (Arg::Imm(imm), Arg::Deref { reg: dst, off }) => {
+
+                let (d, ddd) = encode_reg(dst);
+                let off = *off as i32;
+
+                let mut v = vec![
+                    0b0100_1000 | d,
+                    op_info.i_rm,
+                    0b10_000_000 | op_info.pad << 3 | ddd,
+                ];
+                if matches!(dst, Reg::RSP | Reg::R12) {
+                    v.push(0x24);
+                }
+                v.extend(off.to_le_bytes());
+                v.extend(imm.to_le_bytes());
+                v
+
+        },
+        (Arg::Deref { .. }, Arg::Deref { .. }) => {
+            unreachable!("Found binary instruction with 2 derefs.");
+        }
+        (_, Arg::Imm { .. }) => {
+            unreachable!("Found immediate in destination position.");
+        }
+    }
 }
 
 // #[cfg(test)]
@@ -246,7 +238,7 @@ pub fn encode_binary_instr(op_info: BinaryOpInfo, src: &Arg, dst: &Arg) -> Vec<u
 //         check!(reg_reg, mov!(reg!(RSP), reg!(RDX)), vec![0x48, 0x89, 0xE2]);
 //         check!(
 //             imm_reg,
-//             mov!(imm32!(i32::MAX as i64), reg!(RBP)),
+//             mov!(imm!(i32::MAX as i64), reg!(RBP)),
 //             vec![0x48, 0xC7, 0xC5, 0xFF, 0xFF, 0xFF, 0x7F]
 //         );
 //         check!(
@@ -272,7 +264,7 @@ pub fn encode_binary_instr(op_info: BinaryOpInfo, src: &Arg, dst: &Arg) -> Vec<u
 //         check!(
 //             imm_deref1,
 //             mov!(
-//                 imm32!((i32::MAX - 0xFF) as i64),
+//                 imm!((i32::MAX - 0xFF) as i64),
 //                 deref!(R9, i32::MAX as i64)
 //             ),
 //             vec![0x49, 0xC7, 0x81, 0xFF, 0xFF, 0xFF, 0x7F, 0x00, 0xFF, 0xFF, 0x7F]
@@ -280,7 +272,7 @@ pub fn encode_binary_instr(op_info: BinaryOpInfo, src: &Arg, dst: &Arg) -> Vec<u
 //         check!(
 //             imm_deref2,
 //             mov!(
-//                 imm32!((i32::MAX - 0xFF) as i64),
+//                 imm!((i32::MAX - 0xFF) as i64),
 //                 deref!(RDX, i32::MAX as i64)
 //             ),
 //             vec![0x48, 0xC7, 0x82, 0xFF, 0xFF, 0xFF, 0x7F, 0x00, 0xFF, 0xFF, 0x7F]

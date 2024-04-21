@@ -7,122 +7,122 @@ macro_rules! block {
 
 #[macro_export]
 macro_rules! add {
-    ($src:expr, $dst:expr, $size:expr) => {
+    ($src:expr, $dst:expr) => {
         $crate::passes::select::Instr::Add {
             src: $src,
             dst: $dst,
-            size: $size,
+            
         }
     };
 }
 
 #[macro_export]
 macro_rules! sub {
-    ($src:expr, $dst:expr, $size:expr) => {
+    ($src:expr, $dst:expr) => {
         $crate::passes::select::Instr::Sub {
             src: $src,
             dst: $dst,
-            size: $size,
+            
         }
     };
 }
 
 #[macro_export]
 macro_rules! div {
-    ($divisor:expr, $size:expr) => {
+    ($divisor:expr) => {
         $crate::passes::select::Instr::Div {
             divisor: $divisor,
-            size: $size,
+            
         }
     };
 }
 
 #[macro_export]
 macro_rules! idiv {
-    ($divisor:expr, $size:expr) => {
+    ($divisor:expr) => {
         $crate::passes::select::Instr::IDiv {
             divisor: $divisor,
-            size: $size,
+            
         }
     };
 }
 
 #[macro_export]
 macro_rules! mul {
-    ($src:expr, $size:expr) => {
+    ($src:expr) => {
         $crate::passes::select::Instr::Mul {
             src: $src,
-            size: $size,
+            
         }
     };
 }
 
 #[macro_export]
 macro_rules! imul {
-    ($src:expr, $size:expr) => {
+    ($src:expr) => {
         $crate::passes::select::Instr::IMul {
             src: $src,
-            size: $size,
+            
         }
     };
 }
 
 #[macro_export]
 macro_rules! neg {
-    ($dst:expr, $size:expr) => {
+    ($dst:expr) => {
         $crate::passes::select::Instr::Neg {
             dst: $dst,
-            size: $size,
+            
         }
     };
 }
 
 #[macro_export]
 macro_rules! mov {
-    ($src:expr, $dst:expr, $size:expr) => {
+    ($src:expr, $dst:expr) => {
         $crate::passes::select::Instr::Mov {
             src: $src,
             dst: $dst,
-            size: $size,
+            
         }
     };
 }
 
 #[macro_export]
 macro_rules! movsx {
-    ($src:expr, $dst:expr, $size:expr) => {
+    ($src:expr, $dst:expr) => {
         $crate::passes::select::Instr::MovSX {
             src: $src,
             dst: $dst,
-            size: $size,
+            
         }
     };
 }
 
 #[macro_export]
 macro_rules! push {
-    ($src:expr, $size:expr) => {
+    ($src:expr) => {
         $crate::passes::select::Instr::Push {
             src: $src,
-            size: $size,
+            
         }
     };
 }
 
 #[macro_export]
 macro_rules! pop {
-    ($dst:expr, $size:expr) => {
+    ($dst:expr) => {
         $crate::passes::select::Instr::Pop {
             dst: $dst,
-            size: $size,
+            
         }
     };
 }
 
 #[macro_export]
 macro_rules! ret {
-    ($arity:expr) => {
-        $crate::passes::select::Instr::Ret { arity: $arity }
+    () => {
+        $crate::passes::select::Instr::Ret
     };
 }
 
@@ -135,11 +135,11 @@ macro_rules! syscall {
 
 #[macro_export]
 macro_rules! cmp {
-    ($src:expr, $dst:expr, $size:expr) => {
+    ($src:expr, $dst:expr) => {
         $crate::passes::select::Instr::Cmp {
             src: $src,
             dst: $dst,
-            size: $size,
+            
         }
     };
 }
@@ -163,43 +163,43 @@ macro_rules! jcc {
 
 #[macro_export]
 macro_rules! and {
-    ($src:expr, $dst:expr, $size:expr) => {
+    ($src:expr, $dst:expr) => {
         $crate::passes::select::Instr::And {
             src: $src,
             dst: $dst,
-            size: $size,
+            
         }
     };
 }
 
 #[macro_export]
 macro_rules! or {
-    ($src:expr, $dst:expr, $size:expr) => {
+    ($src:expr, $dst:expr) => {
         $crate::passes::select::Instr::Or {
             src: $src,
             dst: $dst,
-            size: $size,
+            
         }
     };
 }
 
 #[macro_export]
 macro_rules! xor {
-    ($src:expr, $dst:expr, $size:expr) => {
+    ($src:expr, $dst:expr) => {
         $crate::passes::select::Instr::Xor {
             src: $src,
             dst: $dst,
-            size: $size,
+            
         }
     };
 }
 
 #[macro_export]
 macro_rules! not {
-    ($dst:expr, $size:expr) => {
+    ($dst:expr) => {
         $crate::passes::select::Instr::Not {
             dst: $dst,
-            size: $size,
+            
         }
     };
 }
@@ -244,7 +244,7 @@ macro_rules! call_indirect {
 #[macro_export]
 macro_rules! imm {
     ($val:expr) => {
-        $crate::passes::assign::Arg::Imm($crate::passes::validate::Int::I64($val as i64)).into()
+        $crate::passes::assign::Arg::Imm($val as i32).into()
     };
 }
 

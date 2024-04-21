@@ -4,7 +4,7 @@ use crate::passes::select::{Instr, InstrSelected, VarArg};
 use crate::passes::validate::error::TypeError;
 use crate::passes::validate::partial_type::PartialType;
 use crate::passes::validate::{
-    DefConstrained, DefValidated, ExprConstrained, ExprValidated, InstrUniquified, Int,
+    DefConstrained, DefValidated, ExprConstrained, ExprValidated, InstrUniquified,
     PrgConstrained, PrgValidated,
 };
 use crate::utils::union_find::{UnionFind, UnionIndex};
@@ -168,42 +168,47 @@ fn resolve_expr<'p>(
                 Lit::Int(val) => match &typ {
                     Some(typ) => {
                         let int = match typ {
-                            Type::Int(int) => match int {
-                                IntType::I8 => todo!(),
-                                IntType::U8 => Int::U8({
-                                    resolve_int_lit(val, expr.meta.span, u8::from_str_radix)?
-                                }),
-                                IntType::I16 => Int::I16(resolve_int_lit(
-                                    val,
-                                    expr.meta.span,
-                                    i16::from_str_radix,
-                                )?),
-                                IntType::U16 => Int::U16(resolve_int_lit(
-                                    val,
-                                    expr.meta.span,
-                                    u16::from_str_radix,
-                                )?),
-                                IntType::I32 => Int::I32(resolve_int_lit(
-                                    val,
-                                    expr.meta.span,
-                                    i32::from_str_radix,
-                                )?),
-                                IntType::U32 => Int::U32(resolve_int_lit(
-                                    val,
-                                    expr.meta.span,
-                                    u32::from_str_radix,
-                                )?),
-                                IntType::I64 => Int::I64(resolve_int_lit(
-                                    val,
-                                    expr.meta.span,
-                                    i64::from_str_radix,
-                                )?),
-                                IntType::U64 => Int::U64(resolve_int_lit(
-                                    val,
-                                    expr.meta.span,
-                                    u64::from_str_radix,
-                                )?),
-                            },
+                            Type::Int(_int) => resolve_int_lit(
+                                val,
+                                expr.meta.span,
+                                i64::from_str_radix,
+                            )?,
+                            //     match int {
+                            //     IntType::I8 => todo!(),
+                            //     IntType::U8 => Int::U8({
+                            //         resolve_int_lit(val, expr.meta.span, u8::from_str_radix)?
+                            //     }),
+                            //     IntType::I16 => Int::I16(resolve_int_lit(
+                            //         val,
+                            //         expr.meta.span,
+                            //         i16::from_str_radix,
+                            //     )?),
+                            //     IntType::U16 => Int::U16(resolve_int_lit(
+                            //         val,
+                            //         expr.meta.span,
+                            //         u16::from_str_radix,
+                            //     )?),
+                            //     IntType::I32 => Int::I32(resolve_int_lit(
+                            //         val,
+                            //         expr.meta.span,
+                            //         i32::from_str_radix,
+                            //     )?),
+                            //     IntType::U32 => Int::U32(resolve_int_lit(
+                            //         val,
+                            //         expr.meta.span,
+                            //         u32::from_str_radix,
+                            //     )?),
+                            //     IntType::I64 => Int::I64(resolve_int_lit(
+                            //         val,
+                            //         expr.meta.span,
+                            //         i64::from_str_radix,
+                            //     )?),
+                            //     IntType::U64 => Int::U64(resolve_int_lit(
+                            //         val,
+                            //         expr.meta.span,
+                            //         u64::from_str_radix,
+                            //     )?),
+                            // },
                             _ => unreachable!(),
                         };
                         Lit::Int(int)
@@ -314,78 +319,77 @@ pub fn resolve_instr<'p>(
     };
 
     match instr {
-        InstrUniquified::Add { src, dst, size } => InstrSelected::Add {
+        InstrUniquified::Add { src, dst } => InstrSelected::Add {
             src: map(src),
             dst: map(dst),
-            size,
         },
-        InstrUniquified::Sub { src, dst, size } => InstrSelected::Sub {
+        InstrUniquified::Sub { src, dst } => InstrSelected::Sub {
             src: map(src),
             dst: map(dst),
-            size,
+            
         },
-        InstrUniquified::Div { divisor, size } => InstrSelected::Div {
+        InstrUniquified::Div { divisor } => InstrSelected::Div {
             divisor: map(divisor),
-            size,
+            
         },
-        InstrUniquified::IDiv { divisor, size } => InstrSelected::IDiv {
+        InstrUniquified::IDiv { divisor } => InstrSelected::IDiv {
             divisor: map(divisor),
-            size,
+            
         },
-        InstrUniquified::Mul { src, size } => InstrSelected::Mul {
+        InstrUniquified::Mul { src } => InstrSelected::Mul {
             src: map(src),
-            size,
+            
         },
-        InstrUniquified::IMul { src, size } => InstrSelected::IMul {
+        InstrUniquified::IMul { src } => InstrSelected::IMul {
             src: map(src),
-            size,
+            
         },
-        InstrUniquified::Neg { dst, size } => InstrSelected::Neg {
+        InstrUniquified::Neg { dst } => InstrSelected::Neg {
             dst: map(dst),
-            size,
+            
         },
-        InstrUniquified::Mov { src, dst, size } => InstrSelected::Mov {
-            src: map(src),
-            dst: map(dst),
-            size,
-        },
-        InstrUniquified::MovSX { src, dst, size } => InstrSelected::MovSX {
+        InstrUniquified::Mov { src, dst } => InstrSelected::Mov {
             src: map(src),
             dst: map(dst),
-            size,
+            
         },
-        InstrUniquified::Push { src, size } => InstrSelected::Push {
+        InstrUniquified::MovSX { src, dst } => InstrSelected::MovSX {
             src: map(src),
-            size,
-        },
-        InstrUniquified::Pop { dst, size } => InstrSelected::Pop {
             dst: map(dst),
-            size,
+            
+        },
+        InstrUniquified::Push { src } => InstrSelected::Push {
+            src: map(src),
+            
+        },
+        InstrUniquified::Pop { dst } => InstrSelected::Pop {
+            dst: map(dst),
+            
         },
         InstrUniquified::Syscall { arity } => InstrSelected::Syscall { arity },
-        InstrUniquified::Cmp { src, dst, size } => InstrSelected::Cmp {
+        InstrUniquified::Cmp { src, dst } => InstrSelected::Cmp {
             src: map(src),
             dst: map(dst),
-            size,
+            
         },
-        InstrUniquified::And { src, dst, size } => InstrSelected::And {
+        InstrUniquified::And { src, dst } => InstrSelected::And {
             src: map(src),
             dst: map(dst),
-            size,
+            
         },
-        InstrUniquified::Or { src, dst, size } => InstrSelected::Or {
+        InstrUniquified::Or { src, dst } => InstrSelected::Or {
             src: map(src),
             dst: map(dst),
-            size,
+            
         },
-        InstrUniquified::Xor { src, dst, size } => InstrSelected::Xor {
+        InstrUniquified::Xor { src, dst } => InstrSelected::Xor {
             src: map(src),
             dst: map(dst),
-            size,
+            
         },
-        InstrUniquified::Not { dst, size } => InstrSelected::Not {
+        InstrUniquified::Not { dst } => InstrSelected::Not {
             dst: map(dst),
-            size,
+            
         },
         InstrUniquified::Setcc { .. }
         | InstrUniquified::Ret { .. }

@@ -4,7 +4,7 @@ mod display;
 use crate::passes::parse::types::Type;
 use crate::passes::parse::{BinaryOp, Def, Lit, Typed, UnaryOp};
 use crate::passes::select::InstrSelected;
-use crate::passes::validate::Int;
+
 use crate::utils::unique_sym::UniqueSym;
 use derive_more::Display;
 use itertools::Itertools;
@@ -81,7 +81,7 @@ pub enum AExpr<'p> {
 
 #[derive(Copy, Clone, Display)]
 pub enum Atom<'p> {
-    Val { val: Lit<Int> },
+    Val { val: Lit<i64> },
     Var { sym: UniqueSym<'p> },
 }
 

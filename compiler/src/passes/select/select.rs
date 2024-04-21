@@ -6,7 +6,7 @@ use crate::passes::select::{
     Block, Cnd, FunSelected, InstrSelected, VarArg, X86Selected, CALLEE_SAVED_NO_STACK,
     CALLER_SAVED,
 };
-use crate::passes::validate::Int;
+
 use crate::utils::unique_sym::{gen_sym, UniqueSym};
 use crate::*;
 use std::collections::HashMap;
@@ -61,21 +61,21 @@ fn entry_block<'p>(
     let mut instrs = Vec::new();
 
     // Save stack pointers.
-    instrs.push(push!(reg!(RBP), Size::Bit64));
-    instrs.push(mov!(reg!(RSP), reg!(RBP), Size::Bit64));
+    instrs.push(push!(reg!(RBP)));
+    instrs.push(mov!(reg!(RSP), reg!(RBP)));
 
     // Save callee-saved registers (excluding stack pointers).
     for reg in CALLEE_SAVED_NO_STACK {
-        instrs.push(push!(VarArg::Reg(reg), Size::Bit64));
+        instrs.push(push!(VarArg::Reg(reg)));
     }
 
     // Prepare temporary stack space - this will be optimized in later passes.
-    instrs.push(sub!(imm32!(0x1000), reg!(RSP), Size::Bit64));
+    instrs.push(sub!(imm!(0x1000), reg!(RSP)));
 
     // Introduce parameters as local variables.
     for (reg, param) in CALLER_SAVED.into_iter().zip(fun.params.iter()) {
         // Sometimes not the entire register needs to be moved. But we considered this to be negligible.
-        instrs.push(mov!(VarArg::Reg(reg), VarArg::XVar(param.sym), Size::Bit64));
+        instrs.push(mov!(VarArg::Reg(reg), VarArg::XVar(param.sym)));
     }
 
     assert!(
@@ -98,15 +98,15 @@ fn exit_block<'p>(
     let mut instrs = Vec::new();
 
     // Restore temporary stack space.
-    instrs.push(add!(imm!(0x1000), reg!(RSP), Size::Bit64));
+    instrs.push(add!(imm!(0x1000), reg!(RSP)));
 
     // Restore callee-saved registers (excluding stack pointers).
     for reg in CALLEE_SAVED_NO_STACK.into_iter().rev() {
-        instrs.push(pop!(VarArg::Reg(reg), Size::Bit64));
+        instrs.push(pop!(VarArg::Reg(reg)));
     }
 
     // Restore stack pointers.
-    instrs.push(pop!(reg!(RBP), Size::Bit64));
+    instrs.push(pop!(reg!(RBP)));
     instrs.push(ret!());
 
     blocks.insert(exit, Block { instrs });
@@ -189,14 +189,14 @@ fn select_assign<'p>(
                 mov!(reg!(RAX), dst),
             ],
             BinaryOp::Div => vec![
-                mov!(imm32!(0), reg!(RDX)),
+                mov!(imm!(0), reg!(RDX)),
                 mov!(select_atom(a0), reg!(RAX)),
                 mov!(select_atom(a1), reg!(RBX)),
                 div!(reg!(RBX)),
                 mov!(reg!(RAX), dst),
             ],
             BinaryOp::Mod => vec![
-                mov!(imm32!(0), reg!(RDX)),
+                mov!(imm!(0), reg!(RDX)),
                 mov!(select_atom(a0), reg!(RAX)),
                 mov!(select_atom(a1), reg!(RBX)),
                 div!(reg!(RBX)),
@@ -224,7 +224,7 @@ fn select_assign<'p>(
                 vec![
                     mov!(select_atom(a0), var!(tmp)),
                     cmp!(select_atom(a1), var!(tmp)),
-                    mov!(imm32!(0), reg!(RAX)), // todo: can be smaller
+                    mov!(imm!(0), reg!(RAX)), // todo: can be smaller
                     setcc!(select_cmp(op)),
                     mov!(reg!(RAX), dst),
                 ]
@@ -232,7 +232,7 @@ fn select_assign<'p>(
         },
         ExprEliminated::UnaryOp { op, expr: a0 } => match op {
             UnaryOp::Neg => vec![mov!(select_atom(a0), dst.clone()), neg!(dst)],
-            UnaryOp::Not => vec![mov!(select_atom(a0), dst.clone()), xor!(imm32!(1), dst)], // todo: can be smaller
+            UnaryOp::Not => vec![mov!(select_atom(a0), dst.clone()), xor!(imm!(1), dst)], // todo: can be smaller
         },
         ExprEliminated::FunRef { sym, .. } => vec![load_lbl!(sym, dst)],
         ExprEliminated::Apply { fun, args, .. } => {
@@ -262,18 +262,7 @@ fn select_atom(expr: Atom<'_>) -> VarArg<UniqueSym<'_>> {
     match expr {
         Atom::Val { val } => {
             match val {
-                Lit::Int(int) => {
-                    match int {
-                        Int::I8(_) => todo!(),
-                        Int::U8(_) => todo!(),
-                        Int::I16(_) => todo!(),
-                        Int::U16(_) => todo!(),
-                        Int::I32(_) => todo!(),
-                        Int::U32(_) => todo!(),
-                        Int::I64(int) => imm!(int as i32), // not correct yet
-                        Int::U64(_) => todo!(),
-                    }
-                }
+                Lit::Int(int) => imm!(int),
                 Lit::Bool(bool) => imm!(bool as i32), // todo: can be smaller
                 Lit::Unit => imm!(0),                 // todo: can be smaller
             }

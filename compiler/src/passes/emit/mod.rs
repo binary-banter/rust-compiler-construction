@@ -73,58 +73,60 @@ fn emit_instr<'p>(
     rel_jumps: &mut HashMap<usize, UniqueSym<'p>>,
     abs_jumps: &mut HashMap<usize, UniqueSym<'p>>,
 ) {
-    // let v = match instr {
-    //     Instr::Addq { src, dst } => encode_binary_instr(ADDQ_INFO, src, dst),
-    //     Instr::Sub { src, dst } => encode_binary_instr(SUBQ_INFO, src, dst),
-    //     Instr::Movq { src, dst } => encode_binary_instr(MOVQ_INFO, src, dst),
-    //     Instr::Negq { dst } => encode_unary_instr(NEGQ_INFO, dst),
-    //     Instr::Pushq { src } => encode_push_pop(PUSHQ_INFO, src),
-    //     Instr::Popq { dst } => encode_push_pop(POPQ_INFO, dst),
-    //     Instr::Cmpq { src, dst } => encode_binary_instr(CMPQ_INFO, src, dst),
-    //     Instr::Andq { src, dst } => encode_binary_instr(ANDQ_INFO, src, dst),
-    //     Instr::Or { src, dst } => encode_binary_instr(ORQ_INFO, src, dst),
-    //     Instr::Xorq { src, dst } => encode_binary_instr(XORQ_INFO, src, dst),
-    //     Instr::Notq { .. } => todo!(),
-    //     Instr::Setcc { cnd } => encode_setcc(cnd),
-    //     Instr::CallDirect { lbl, .. } => {
-    //         rel_jumps.insert(machine_code.len() + 1, *lbl);
-    //         vec![0xE8, 0x00, 0x00, 0x00, 0x00]
-    //     }
-    //     Instr::CallIndirect { src, .. } => encode_unary_instr(CALLQ_INDIRECT_INFO, src),
-    //     Instr::Jmp { lbl } => {
-    //         rel_jumps.insert(machine_code.len() + 1, *lbl);
-    //         vec![0xE9, 0x00, 0x00, 0x00, 0x00]
-    //     }
-    //     Instr::Jcc { lbl, cnd } => {
-    //         rel_jumps.insert(machine_code.len() + 2, *lbl);
-    //         vec![0x0F, encode_cnd(*cnd), 0x00, 0x00, 0x00, 0x00]
-    //     }
-    //     Instr::Retq => vec![0xC3],
-    //     Instr::Syscall { .. } => vec![0x0F, 0x05],
-    //     Instr::Divq { divisor } => encode_muldiv_instr(
-    //         MulDivOpInfo {
-    //             op: 0xF7,
-    //             imm_as_src: 0b110,
-    //         },
-    //         divisor,
-    //     ),
-    //     Instr::Mulq { src } => encode_muldiv_instr(
-    //         MulDivOpInfo {
-    //             op: 0xF7,
-    //             imm_as_src: 0b100,
-    //         },
-    //         src,
-    //     ),
-    //     Instr::LoadLbl { lbl, dst } => {
-    //         // This instruction creates a 32-bit placeholder and stores the offset so it can be set to `lbl` later.
-    //         let bytes = encode_binary_instr(MOVQ_INFO, &imm!(0), dst);
-    //         // The label should, regardless of the destination variant, always be stored in the last 4 bytes (we hope).
-    //         abs_jumps.insert(machine_code.len() + bytes.len() - 4, *lbl);
-    //         bytes
-    //     }
-    // };
-    // machine_code.extend(v);
-    todo!()
+    let v = match instr {
+        Instr::Add { src, dst } => encode_binary_instr(ADDQ_INFO, src, dst),
+        Instr::Sub { src, dst } => encode_binary_instr(SUBQ_INFO, src, dst),
+        Instr::Mov { src, dst } => encode_binary_instr(MOVQ_INFO, src, dst),
+        Instr::Neg { dst } => encode_unary_instr(NEGQ_INFO, dst),
+        Instr::Push { src } => encode_push_pop(PUSHQ_INFO, src),
+        Instr::Pop { dst } => encode_push_pop(POPQ_INFO, dst),
+        Instr::Cmp { src, dst } => encode_binary_instr(CMPQ_INFO, src, dst),
+        Instr::And { src, dst } => encode_binary_instr(ANDQ_INFO, src, dst),
+        Instr::Or { src, dst } => encode_binary_instr(ORQ_INFO, src, dst),
+        Instr::Xor { src, dst } => encode_binary_instr(XORQ_INFO, src, dst),
+        Instr::Not { .. } => todo!(),
+        Instr::Setcc { cnd } => encode_setcc(cnd),
+        Instr::CallDirect { lbl, .. } => {
+            rel_jumps.insert(machine_code.len() + 1, *lbl);
+            vec![0xE8, 0x00, 0x00, 0x00, 0x00]
+        }
+        Instr::CallIndirect { src, .. } => encode_unary_instr(CALLQ_INDIRECT_INFO, src),
+        Instr::Jmp { lbl } => {
+            rel_jumps.insert(machine_code.len() + 1, *lbl);
+            vec![0xE9, 0x00, 0x00, 0x00, 0x00]
+        }
+        Instr::Jcc { lbl, cnd } => {
+            rel_jumps.insert(machine_code.len() + 2, *lbl);
+            vec![0x0F, encode_cnd(*cnd), 0x00, 0x00, 0x00, 0x00]
+        }
+        Instr::Ret => vec![0xC3],
+        Instr::Syscall { .. } => vec![0x0F, 0x05],
+        Instr::Div { divisor } => encode_muldiv_instr(
+            MulDivOpInfo {
+                op: 0xF7,
+                imm_as_src: 0b110,
+            },
+            divisor,
+        ),
+        Instr::Mul { src } => encode_muldiv_instr(
+            MulDivOpInfo {
+                op: 0xF7,
+                imm_as_src: 0b100,
+            },
+            src,
+        ),
+        Instr::LoadLbl { lbl, dst } => {
+            // This instruction creates a 32-bit placeholder and stores the offset so it can be set to `lbl` later.
+            let bytes = encode_binary_instr(MOVQ_INFO, &imm!(0), dst);
+            // The label should, regardless of the destination variant, always be stored in the last 4 bytes (we hope).
+            abs_jumps.insert(machine_code.len() + bytes.len() - 4, *lbl);
+            bytes
+        }
+        Instr::IDiv { .. } => todo!(),
+        Instr::IMul { .. } => todo!(),
+        Instr::MovSX { .. } => todo!(),
+    };
+    machine_code.extend(v);
 }
 
 fn encode_reg(reg: &Reg) -> (u8, u8) {

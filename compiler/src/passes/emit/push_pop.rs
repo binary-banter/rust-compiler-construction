@@ -1,6 +1,6 @@
 use crate::passes::assign::Arg;
 use crate::passes::emit;
-use crate::passes::validate::Int;
+
 
 pub struct PushPopInfo {
     pub op_reg: u8,
@@ -25,13 +25,10 @@ pub const POPQ_INFO: PushPopInfo = PushPopInfo {
 
 pub fn encode_push_pop(op_info: PushPopInfo, reg: &Arg) -> Vec<u8> {
     match reg {
-        Arg::Imm(imm) => match imm {
-            Int::I64(val) => {
-                let mut v = vec![op_info.op_imm];
-                v.extend(val.to_le_bytes());
-                v
-            }
-            _ => todo!(),
+        Arg::Imm(val) => {
+            let mut v = vec![op_info.op_imm];
+            v.extend(val.to_le_bytes());
+            v
         },
         Arg::Reg(reg) => {
             let (r, rrr) = emit::encode_reg(reg);

@@ -44,13 +44,12 @@ fn patch_block(block: Block<'_, Arg>) -> Block<'_, Arg> {
 }
 
 fn patch_instr(instr: Instr<Arg, UniqueSym<'_>>) -> Vec<Instr<Arg, UniqueSym<'_>>> {
-    // match instr {
-    //     Instr::Addq { src, dst } => patch_args(src, dst, |src, dst| add!(src, dst)),
-    //     Instr::Sub { src, dst } => patch_args(src, dst, |src, dst| sub!(src, dst)),
-    //     Instr::Movq { src, dst } => patch_args(src, dst, |src, dst| mov!(src, dst)),
-    //     _ => vec![instr],
-    // }
-    todo!()
+    match instr {
+        Instr::Add { src, dst } => patch_args(src, dst, |src, dst| add!(src, dst)),
+        Instr::Sub { src, dst } => patch_args(src, dst, |src, dst| sub!(src, dst)),
+        Instr::Mov { src, dst } => patch_args(src, dst, |src, dst| mov!(src, dst)),
+        _ => vec![instr],
+    }
 }
 
 fn patch_args<'p>(
@@ -58,14 +57,13 @@ fn patch_args<'p>(
     dst: Arg,
     op: fn(Arg, Arg) -> Instr<Arg, UniqueSym<'p>>,
 ) -> Vec<Instr<Arg, UniqueSym<'p>>> {
-    // match (&src, &dst) {
-    //     (Arg::Deref { .. }, Arg::Deref { .. }) => vec![
-    //         push!(reg!(R8)),
-    //         mov!(src, reg!(R8)),
-    //         op(reg!(R8), dst),
-    //         pop!(reg!(R8)),
-    //     ],
-    //     _ => vec![op(src, dst)],
-    // }
-    todo!()
+    match (&src, &dst) {
+        (Arg::Deref { .. }, Arg::Deref { .. }) => vec![
+            push!(reg!(R8)),
+            mov!(src, reg!(R8)),
+            op(reg!(R8), dst),
+            pop!(reg!(R8)),
+        ],
+        _ => vec![op(src, dst)],
+    }
 }

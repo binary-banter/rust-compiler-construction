@@ -185,5 +185,8 @@ pub fn handle_instr<'p>(
             }
             arg(src, R);
         }
+        InstrSelected::IDiv { .. } => todo!(),
+        InstrSelected::IMul { .. } => todo!(),
+        InstrSelected::MovSX { .. } => todo!(),
     }
 }

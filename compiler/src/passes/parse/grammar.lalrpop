@@ -3,7 +3,7 @@ use crate::passes::parse::{
 };
 use crate::passes::select::{VarArg, Reg};
 use functor_derive::Functor;
-use crate::passes::validate::Int;
+
 use crate::passes::select::Size;
 
 grammar;
@@ -399,26 +399,26 @@ Comma<T>: Vec<T> = {
 Spanned<T>: Spanned<T> = <l:@L> <inner:T> <r:@R> => Meta { meta: (l, r - l), inner };
 
 AsmInstr: InstrParsed<'input> = {
-    "addq" <src:AsmArg> <dst:AsmArg> => InstrParsed::Add { src, dst, size: Size::Bit64 },
-    "subq" <src:AsmArg> <dst:AsmArg> => InstrParsed::Sub { src, dst, size: Size::Bit64 },
-    "mulq" <src:AsmArg> => InstrParsed::Mul { src, size: Size::Bit64 },
-    "divq" <divisor:AsmArg> => InstrParsed::Div { divisor, size: Size::Bit64 },
-    "negq" <dst:AsmArg> => InstrParsed::Neg { dst, size: Size::Bit64 },
-    "movq" <src:AsmArg> <dst:AsmArg> => InstrParsed::Mov { src, dst, size: Size::Bit64 },
-    "pushq" <src:AsmArg> => InstrParsed::Push { src, size: Size::Bit64 },
-    "popq" <dst:AsmArg> => InstrParsed::Pop { dst, size: Size::Bit64 },
-    "andq" <src:AsmArg> <dst:AsmArg> => InstrParsed::And { src, dst, size: Size::Bit64 },
-    "orq" <src:AsmArg> <dst:AsmArg> => InstrParsed::Or { src, dst, size: Size::Bit64 },
-    "xorq" <src:AsmArg> <dst:AsmArg> => InstrParsed::Xor { src, dst, size: Size::Bit64 },
-    "notq" <dst:AsmArg> => InstrParsed::Not { dst, size: Size::Bit64 },
-    "cmpq" <src:AsmArg> <dst:AsmArg> => InstrParsed::Cmp { src, dst, size: Size::Bit64 },
+    "addq" <src:AsmArg> <dst:AsmArg> => InstrParsed::Add { src, dst },
+    "subq" <src:AsmArg> <dst:AsmArg> => InstrParsed::Sub { src, dst },
+    "mulq" <src:AsmArg> => InstrParsed::Mul { src },
+    "divq" <divisor:AsmArg> => InstrParsed::Div { divisor },
+    "negq" <dst:AsmArg> => InstrParsed::Neg { dst },
+    "movq" <src:AsmArg> <dst:AsmArg> => InstrParsed::Mov { src, dst },
+    "pushq" <src:AsmArg> => InstrParsed::Push { src },
+    "popq" <dst:AsmArg> => InstrParsed::Pop { dst },
+    "andq" <src:AsmArg> <dst:AsmArg> => InstrParsed::And { src, dst },
+    "orq" <src:AsmArg> <dst:AsmArg> => InstrParsed::Or { src, dst },
+    "xorq" <src:AsmArg> <dst:AsmArg> => InstrParsed::Xor { src, dst },
+    "notq" <dst:AsmArg> => InstrParsed::Not { dst },
+    "cmpq" <src:AsmArg> <dst:AsmArg> => InstrParsed::Cmp { src, dst },
     "syscall" <arity:Int> => InstrParsed::Syscall { arity: arity.parse().expect("internal compiler error :(") },
 }
 
 AsmArg: VarArg<Spanned<&'input str>> = {
     <reg:AsmReg> => VarArg::Reg(reg),
     "{" <sym:Ident> "}" => VarArg::XVar(sym),
-    "$" <val:Int> => VarArg::Imm(Int::I64(val.parse().expect("Internal compiler error (oh no!): We were too lazy to make a proper error for this"))),
+    "$" <val:Int> => VarArg::Imm(val.parse().expect("Internal compiler error (oh no!): We were too lazy to make a proper error for this")),
     "[" <reg:AsmReg> "+" <off:Int> "]"  => VarArg::Deref {
         reg,
         off: off.parse().expect("Internal compiler error (oh no!): We were too lazy to make a proper error for this"),

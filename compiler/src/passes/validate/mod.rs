@@ -32,7 +32,7 @@ pub struct PrgConstrained<'p> {
 }
 
 pub type DefValidated<'p> = Def<UniqueSym<'p>, &'p str, Typed<'p, ExprValidated<'p>>>;
-pub type ExprValidated<'p> = Expr<UniqueSym<'p>, &'p str, Lit<Int>, Type<UniqueSym<'p>>>;
+pub type ExprValidated<'p> = Expr<UniqueSym<'p>, &'p str, Lit<i64>, Type<UniqueSym<'p>>>;
 
 pub type DefConstrained<'p> =
     Def<Spanned<UniqueSym<'p>>, Spanned<&'p str>, Constrained<ExprConstrained<'p>>>;
@@ -47,16 +47,4 @@ pub type InstrUniquified<'p> = Instr<VarArg<Spanned<UniqueSym<'p>>>, Spanned<Uni
 pub struct MetaConstrained {
     pub span: Span,
     pub index: UnionIndex,
-}
-
-#[derive(Copy, Clone, Debug, PartialEq, Display)]
-pub enum Int {
-    I8(i8),
-    U8(u8),
-    I16(i16),
-    U16(u16),
-    I32(i32),
-    U32(u32),
-    I64(i64),
-    U64(u64),
 }
